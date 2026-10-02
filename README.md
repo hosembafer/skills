@@ -20,13 +20,13 @@ My agent skills for Claude Code, Codex and other agents that read [Agent Skills]
 All skills, for Claude Code and Codex:
 
 ```bash
-npx skills add hosembafer/skills -g --skill '*' -a claude-code -a codex
+npx skills add git@github.com:hosembafer/skills.git -g --skill '*' -a claude-code -a codex
 ```
 
 One skill:
 
 ```bash
-npx skills add hosembafer/skills -g --skill ship
+npx skills add git@github.com:hosembafer/skills.git -g --skill ship
 ```
 
 Leave out `-a` to choose agents interactively, and `-g` to install into the current project instead of your user directory.
