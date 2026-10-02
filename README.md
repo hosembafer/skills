@@ -55,6 +55,7 @@ skills/
     agents/openai.yaml   # Codex: manual invocation only
   merge-to/
     SKILL.md
+    scripts/merge-to.sh  # the git steps the skill runs
     agents/openai.yaml   # Codex: manual invocation only
   commit-subject/SKILL.md
   smart-copy/SKILL.md
