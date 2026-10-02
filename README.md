@@ -52,6 +52,7 @@ Each skill is a folder under `skills/` whose name matches the skill's `name` fie
 skills/
   ship/
     SKILL.md
+    scripts/ship.sh      # the git steps the skill runs
     agents/openai.yaml   # Codex: manual invocation only
   merge-to/
     SKILL.md
