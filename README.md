@@ -10,7 +10,7 @@ My agent skills for Claude Code, Codex and other agents that read [Agent Skills]
 | `merge-to`       | Pushes the branch, merges it into a shared integration branch such as `staging`, and pushes the merge.       | `/merge-to` only           |
 | `commit-subject` | Writes a one-line commit subject for the current changes in the repo's style and copies it to the clipboard. | Agent or `/commit-subject` |
 | `smart-copy`     | Copies what you'll paste next (a continue prompt, a drafted message, a command) to the clipboard, verbatim.  | Agent or `/smart-copy`     |
-| `runtime-qa`     | Runs manual QA in Chrome via Claude in Chrome, each session on its own dev-server port and Chrome profile.   | Agent or `/runtime-qa`     |
+| `runtime-qa`     | Runs manual QA in Chrome through the agent's browser extension, each session on its own port and profile.    | Agent or `/runtime-qa`     |
 | `whoami`         | Reports which agent CLI is running the session and which account is logged into it.                          | Agent or `/whoami`         |
 
 `ship` and `merge-to` never start on their own. Running one is your approval for that run only: `ship` commits and
@@ -21,9 +21,10 @@ conflict, so the integration branch tests each branch as it will ship.
 
 `commit-subject` and `smart-copy` use `pbcopy`, so they need macOS.
 
-`runtime-qa` needs Claude Code with Claude in Chrome, and Google Chrome on macOS. Each QA slot is a separate Chrome
-instance with its own profile under `~/.runtime-qa/chrome`. The first run of a slot asks you to add the Claude
-extension in that window and sign in; later runs reuse the profile, its extension and its sign-ins.
+`runtime-qa` needs Google Chrome on macOS, and Claude Code with Claude in Chrome or Codex with its Chrome plugin. Each
+QA slot is a separate Chrome instance with its own profile under `~/.runtime-qa/chrome`. The first run of a slot with
+an agent asks you to add that agent's extension in the slot's window and sign in; later runs reuse the profile, its
+extensions and its sign-ins.
 
 ## Install
 
