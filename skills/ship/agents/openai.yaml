@@ -1,0 +1,5 @@
+interface:
+  display_name: "Ship"
+  short_description: "Granular commits, push, and MR/PR"
+policy:
+  allow_implicit_invocation: false
