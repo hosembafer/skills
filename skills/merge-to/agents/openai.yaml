@@ -1,0 +1,5 @@
+interface:
+  display_name: "Merge to"
+  short_description: "Merge the branch into an integration branch and push"
+policy:
+  allow_implicit_invocation: false
