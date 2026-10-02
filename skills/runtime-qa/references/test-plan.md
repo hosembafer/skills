@@ -30,12 +30,12 @@ it and what would unblock it.
 
 Every TC has one. Network and console are the default pair.
 
-- **Network:** `read_network_requests`. A 4xx or 5xx the TC did not expect fails it. Record it as
-  `METHOD /path → status`.
-- **Console:** `read_console_messages` with a `pattern`. Page errors fail the TC. Third-party noise (analytics, chat
-  widgets) is reported once per session and fails nothing.
+- **Network:** the page's requests (`read_network_requests` in Claude in Chrome). A 4xx or 5xx the TC did not expect
+  fails it. Record it as `METHOD /path → status`.
+- **Console:** the page's console, filtered to what matters (`read_console_messages` with a `pattern`). Page errors fail
+  the TC. Third-party noise (analytics, chat widgets) is reported once per session and fails nothing.
 - **Visual:** a screenshot for any layout or visual defect, described in plain words.
-- **State:** `javascript_tool` reads of the DOM or app state. See `browser-gotchas.md` before writing one.
+- **State:** script reads of the DOM or app state (`javascript_tool`; see `browser-gotchas.md` before writing one).
 
 ## Scoreboard
 
