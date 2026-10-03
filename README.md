@@ -1,6 +1,6 @@
 # skills
 
-My agent skills for Claude Code, Codex and other agents that read [Agent Skills](https://agentskills.io). Install them with the [`skills`](https://github.com/vercel-labs/skills) CLI.
+A collection of agent skills for Claude Code, Codex and other agents that read [Agent Skills](https://agentskills.io). Install them with the [`skills`](https://github.com/vercel-labs/skills) CLI.
 
 ## Skills
 
@@ -28,16 +28,18 @@ extensions and its sign-ins.
 
 ## Install
 
+Replace `OWNER` in the examples below with the repository owner.
+
 All skills, for Claude Code and Codex:
 
 ```bash
-npx skills add git@github.com:hosembafer/skills.git -g --skill '*' -a claude-code -a codex
+npx skills add git@github.com:OWNER/skills.git -g --skill '*' -a claude-code -a codex
 ```
 
 One skill:
 
 ```bash
-npx skills add git@github.com:hosembafer/skills.git -g --skill ship
+npx skills add git@github.com:OWNER/skills.git -g --skill ship
 ```
 
 Leave out `-a` to choose agents interactively, and `-g` to install into the current project instead of your user directory.
