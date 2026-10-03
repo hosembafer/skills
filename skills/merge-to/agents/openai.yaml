@@ -1,5 +1,6 @@
 interface:
   display_name: "Merge to"
   short_description: "Merge the branch into an integration branch and push"
+  default_prompt: "Use $merge-to to merge this branch into the integration branch I specify."
 policy:
   allow_implicit_invocation: false

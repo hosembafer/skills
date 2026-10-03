@@ -1,5 +1,6 @@
 interface:
   display_name: "Ship"
   short_description: "Granular commits, push, and MR/PR"
+  default_prompt: "Use $ship to commit these changes, push the branch, and open its MR/PR."
 policy:
   allow_implicit_invocation: false

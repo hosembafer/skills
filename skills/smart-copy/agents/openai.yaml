@@ -1,0 +1,4 @@
+interface:
+  display_name: "Smart copy"
+  short_description: "Copy the text you will paste next, exactly as written"
+  default_prompt: "Use $smart-copy to copy the command from your previous reply."

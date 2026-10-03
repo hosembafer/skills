@@ -1,0 +1,4 @@
+interface:
+  display_name: "Who am I"
+  short_description: "Identify the current agent and its signed-in account"
+  default_prompt: "Use $whoami to identify this agent and its signed-in account."
