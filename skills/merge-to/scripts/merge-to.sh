@@ -60,17 +60,6 @@ merge_targets() {
   done | awk '!seen[$0]++'
 }
 
-# Earlier targets first, then local branches that exist on origin, most recently committed first.
-candidates() {
-  local b
-  { [ -n "$merged_into" ] && say "$merged_into"; git for-each-ref --sort=-committerdate --format='%(refname:short)' refs/heads; } |
-    awk 'NF && !seen[$0]++' | while IFS= read -r b; do
-      [ "$b" = "$branch" ] && continue
-      is_protected "$b" && continue
-      git show-ref --verify --quiet "refs/remotes/origin/$b" && say "candidate: $b"
-    done
-}
-
 report_conflicts() {
   local f
   keep=1
@@ -115,7 +104,7 @@ push_target() {
 }
 
 start() {
-  local target_arg=${1:-} n dirty last
+  local target_arg=${1:-} merged_into n dirty last
   branch=$(git symbolic-ref --quiet --short HEAD) || stop "HEAD is detached"
   repo=$(git rev-parse --show-toplevel) || fail "not inside a git repository"
   default=$(default_branch)
@@ -128,7 +117,6 @@ start() {
       say "target: $target (where earlier merges of $branch went)"
     else
       say "target: needed"
-      candidates
       exit 4
     fi
   fi

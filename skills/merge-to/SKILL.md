@@ -22,13 +22,13 @@ bash ${CLAUDE_SKILL_DIR}/scripts/merge-to.sh $ARGUMENTS
 
 `${CLAUDE_SKILL_DIR}` is the folder holding this file, and `$ARGUMENTS` is the target the user gave, if any. Act on the exit code:
 
-| Exit | Meaning                                     | What you do                                                                                                                               |
-| ---- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| 0    | Done, or nothing to merge                   | Reply.                                                                                                                                    |
-| 2    | Stopped; the `stop:` line says why          | Relay the reason. Don't work around it.                                                                                                   |
-| 4    | No target given, and none could be inferred | Ask which branch. Offer the first three `candidate:` branches plus "Another branch"; with no candidates, just ask. Rerun with the answer. |
-| 3    | Conflicts                                   | Resolve them (below).                                                                                                                     |
-| 1    | Error                                       | Relay the `error:` line.                                                                                                                  |
+| Exit | Meaning                                     | What you do                                   |
+| ---- | ------------------------------------------- | --------------------------------------------- |
+| 0    | Done, or nothing to merge                   | Reply.                                        |
+| 2    | Stopped; the `stop:` line says why          | Relay the reason. Don't work around it.       |
+| 4    | No target given, and none could be inferred | Ask which branch, then rerun with the answer. |
+| 3    | Conflicts                                   | Resolve them (below).                         |
+| 1    | Error                                       | Relay the `error:` line.                      |
 
 ## Conflicts
 
