@@ -8,7 +8,7 @@ allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/merge-to.sh *)
 
 # Merge to
 
-Running `/merge-to <target>` is the user's approval, for this run only, to push the current branch and to push one merge commit to `<target>`.
+Explicitly invoking this skill (`/merge-to <target>` in Claude Code or `$merge-to <target>` in Codex) is the user's approval, for this run only, to push the current branch and to push one merge commit to `<target>`.
 
 `<target>` is a shared integration branch where several in-progress branches are combined for testing. Testers there must see every branch behave the way it will ship. The current branch stays checked out, and work on it goes on afterwards.
 
@@ -17,10 +17,10 @@ Running `/merge-to <target>` is the user's approval, for this run only, to push 
 `scripts/merge-to.sh` does every git step: the checks, pushing the branch, merging in a temporary worktree, pushing `<target>`, merging again when `<target>` moves, and cleaning up. Don't run those steps yourself. From the user's repository, run exactly:
 
 ```bash
-bash ${CLAUDE_SKILL_DIR}/scripts/merge-to.sh $ARGUMENTS
+bash "<skill-directory>/scripts/merge-to.sh" "<target>"
 ```
 
-`${CLAUDE_SKILL_DIR}` is the folder holding this file, and `$ARGUMENTS` is the target the user gave, if any. Act on the exit code:
+Resolve `<skill-directory>` from the loaded SKILL.md path and replace `<target>` with the branch the user gave, keeping both quoted. In Claude Code, `${CLAUDE_SKILL_DIR}` and `$ARGUMENTS` provide those values; Codex does not supply those variables, so use the loaded path and the user's message directly. If no target was given, omit that argument so the script can infer it. Act on the exit code:
 
 | Exit | Meaning                                     | What you do                                   |
 | ---- | ------------------------------------------- | --------------------------------------------- |
@@ -39,7 +39,7 @@ The script prints the state folder (`conflicts:`), the worktree (`worktree:`), a
 
 Ask about all non-trivial hunks in one message: the file, both sides, the commit behind each side, and your recommendation. Wait for the answer and apply it exactly.
 
-Edit the files in the worktree only, then run `bash ${CLAUDE_SKILL_DIR}/scripts/merge-to.sh --continue <state folder>`. It exits with the same codes. A 3 again means markers are left, or `<target>` moved and the merge was redone: reuse the user's earlier answers for the same hunks. If the user aborts, run `bash ${CLAUDE_SKILL_DIR}/scripts/merge-to.sh --abort <state folder>`.
+Edit the files in the worktree only, then run `bash "<skill-directory>/scripts/merge-to.sh" --continue "<state folder>"`. It exits with the same codes. A 3 again means markers are left, or `<target>` moved and the merge was redone: reuse the user's earlier answers for the same hunks. If the user aborts, run `bash "<skill-directory>/scripts/merge-to.sh" --abort "<state folder>"`.
 
 ## Reply
 
