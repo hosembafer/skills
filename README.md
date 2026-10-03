@@ -84,21 +84,28 @@ Updates replace the installed copies, so edit skills in a clone of this repo and
 
 ## Validate
 
-From a clone, with Python 3.9 or later and Bash available:
+From a clone, with Go 1.26 or later, Bash, and ShellCheck available. Install ShellCheck directly through your system
+package manager, such as `brew install shellcheck` on macOS or `sudo apt install shellcheck` on Ubuntu.
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python3 -m pip install -r requirements-dev.txt
-python3 scripts/validate-skills.py
-python3 -m unittest discover -s tests -v
+go run ./cmd/validate-skills
+go test ./...
+go vet ./...
 ```
 
-The dependencies include PyYAML and ShellCheck. The validator checks front matter, matching and unique skill names,
-local references, UI metadata, and consistent explicit-invocation policies. It checks Bash and Python syntax without
-executing helpers, and fails on ShellCheck errors and warnings. Tests cover the validator's acceptance and rejection
-of broken bundles. `.github/workflows/validate.yml` runs these commands on macOS and Linux for branch pushes,
-pull requests, and version tags.
+Go downloads the single YAML library automatically; `go.mod` and `go.sum` record its version and checksums.
+The validator checks front matter, matching and unique skill names, local references, UI metadata, and consistent
+explicit-invocation policies. It checks Bash and Go syntax without executing helpers, and fails on ShellCheck errors
+and warnings. Tests cover the validator's acceptance and rejection of broken bundles, plus the `whoami` helper's
+account protocol, safe output, timeouts, and process cleanup using a fake local server.
+
+To build a standalone validator, run `go build -o /tmp/validate-skills ./cmd/validate-skills`, then
+`/tmp/validate-skills /path/to/checkout`. The binary needs Bash and ShellCheck on `PATH` and defaults to validating
+the current directory when no checkout path is supplied.
+
+`.github/workflows/validate.yml` runs validation, tests, formatting, and vet checks on macOS and Linux for branch
+pushes, pull requests, and version tags. CI installs a pinned ShellCheck binary with a verified checksum and checks
+Go formatting in both the validator and skill helpers.
 
 Every skill in this collection includes `agents/openai.yaml` with a display name, a 25–64 character description, and a
 default prompt naming the skill. This is a repository convention; the Agent Skills format itself does not require
