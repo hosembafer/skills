@@ -32,7 +32,7 @@ conflict, so the integration branch tests each branch as it will ship.
 | `commit-subject` | Yes | Yes | macOS | Git and `pbcopy`. |
 | `smart-copy` | Yes | Yes | macOS | `pbcopy`, `pbpaste`, and Perl. |
 | `runtime-qa` | Yes, with Claude in Chrome | Yes, with the Chrome plugin | macOS | Bash, Git, `lsof`, Google Chrome, and the agent's installed, signed-in browser extension. |
-| `whoami` | Agent identity; account from context | Agent identity; account lookup when available | Any OS for context or connected account lookup; macOS or Linux for the local helper | Local Codex account lookup needs Python 3 and `codex` on `PATH`. Other agents use explicit session context and may report `unknown`. |
+| `whoami` | Agent identity; account from context | Agent identity; account lookup when available | Any OS for context or connected account lookup; macOS or Linux for the local helper | Local Codex account lookup needs Go and `codex` on `PATH`. The helper uses only the standard library and runs from an installed bundle. Other agents use explicit session context and may report `unknown`. |
 
 The table describes each workflow's requirements. CI validates structure and syntax on macOS and Linux; it does not
 exercise Git hosting, clipboard access, account lookup, or browser workflows. Other agents that read Agent Skills may
@@ -138,7 +138,8 @@ skills/
     agents/openai.yaml
   whoami/
     SKILL.md
-    scripts/codex_account.py
+    scripts/codex_account.go
+    scripts/codex_account_test.go
     agents/openai.yaml
 ```
 

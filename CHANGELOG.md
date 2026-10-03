@@ -17,6 +17,8 @@ Git tags. Changes below remain unreleased until committed, validated, and tagged
 
 ### Changed
 
+- The local `whoami` account helper uses the Go standard library and runs from an installed skill bundle. Tests cover
+  its initialization and account lookup protocol, safe output, timeouts, and server process cleanup.
 - `ship` and `merge-to` now explain Codex invocation, resolve helper paths from the loaded skill, quote those paths,
   and pass user arguments explicitly instead of assuming Claude Code's variables are available.
 - Installation examples use a repository URL placeholder or the configured remote, and the copyright notice uses
