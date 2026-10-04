@@ -1,0 +1,4 @@
+interface:
+  display_name: "Runtime QA"
+  short_description: "Test app flows in an isolated Chrome session"
+  default_prompt: "Use $runtime-qa to verify the changes on this branch in Chrome."

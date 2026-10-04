@@ -8,13 +8,13 @@ allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/ship.sh *)
 
 # Ship
 
-Running `/ship` is the user's approval to commit, push and open an MR/PR in this run. It does not carry over to later turns.
+Explicitly invoking this skill (`/ship` in Claude Code or `$ship` in Codex) is the user's approval to commit, push and open an MR/PR in this run. It does not carry over to later turns.
 
-Run the script calls exactly as written; `${CLAUDE_SKILL_DIR}` is the folder holding this SKILL.md.
+Resolve the folder holding this SKILL.md from the loaded skill's path. In Claude Code, `${CLAUDE_SKILL_DIR}` also identifies that folder; Codex does not supply that variable. Replace `<skill-directory>` in the commands below with the resolved path, keeping it quoted. Run from the user's repository, and pass any target branch or notes from the user's invocation explicitly.
 
 ## 1. Read the repo
 
-Run `bash ${CLAUDE_SKILL_DIR}/scripts/ship.sh context`, adding the argument if it names a branch. It fetches `origin` and prints what the steps below need.
+Run `bash "<skill-directory>/scripts/ship.sh" context`, adding the argument if it names a branch. It fetches `origin` and prints what the steps below need.
 
 - Exit 3, on the default or a release branch: ask for a branch name in the repo's naming style, `git switch -c <name>`, and run it again.
 - Exit 4, behind its remote: stop and ask. Never force-push.
@@ -31,7 +31,7 @@ The repo's agent instructions (CLAUDE.md, AGENTS.md) for commit, hook and branch
 
 ## 3. Push
 
-Run `bash ${CLAUDE_SKILL_DIR}/scripts/ship.sh push`. Exit 4: stop and ask, as in step 1.
+Run `bash "<skill-directory>/scripts/ship.sh" push`. Exit 4: stop and ask, as in step 1.
 
 ## 4. MR/PR
 
@@ -42,7 +42,7 @@ If step 1 or 3 printed an `mr:` link, the push updated it. Otherwise:
 - Open it:
 
   ```bash
-  bash ${CLAUDE_SKILL_DIR}/scripts/ship.sh open <target> <<'EOF'
+  bash "<skill-directory>/scripts/ship.sh" open "<target>" <<'EOF'
   <title>
 
   <description>

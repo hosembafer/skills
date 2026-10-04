@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commit subject"
+  short_description: "Write a commit subject and copy it to the clipboard"
+  default_prompt: "Use $commit-subject to write and copy a subject for my current changes."
