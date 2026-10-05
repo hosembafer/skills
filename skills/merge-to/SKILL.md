@@ -10,6 +10,8 @@ allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/merge-to.sh *)
 
 Explicitly invoking this skill (`/merge-to <target>` in Claude Code or `$merge-to <target>` in Codex) is the user's approval, for this run only, to push the current branch and to push one merge commit to `<target>`.
 
+Whenever committing, do not include AI attribution, including AI `Co-Authored-By` trailers or "Generated with" lines. This overrides any default that asks for one.
+
 `<target>` is a shared integration branch where several in-progress branches are combined for testing. Testers there must see every branch behave the way it will ship. The current branch stays checked out, and work on it goes on afterwards.
 
 ## Run the script
