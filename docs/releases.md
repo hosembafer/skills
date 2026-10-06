@@ -23,7 +23,7 @@ when the release is ready, not a record of an existing release.
    git show --no-patch v0.1.0
    ```
 
-5. Push that tag to this private repository when ready to make the version available to repository collaborators:
+5. Push that tag to GitHub when the release is ready:
 
    ```bash
    git push origin v0.1.0
@@ -34,11 +34,11 @@ uncommitted changes. Keep existing release tags fixed and create a new version f
 
 ## Install a tagged version
 
-Once the tag exists, install its contents using the `skills` CLI's `#ref` Git-source syntax. From a clone of this
-skills repository, read the configured remote URL and append the tag. The quotes keep the source literal in your shell:
+Once the tag exists, install its contents using the `skills` CLI's `#ref` Git-source syntax. Set the repository URL
+and append the tag. The quotes keep the source literal in your shell:
 
 ```bash
-skills_repository=$(git remote get-url origin)
+skills_repository='https://github.com/hosembafer/skills.git'
 npx skills add "${skills_repository}#v0.1.0" -g --skill '*' -a claude-code -a codex
 ```
 

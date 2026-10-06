@@ -48,17 +48,16 @@ extensions and its sign-ins.
 
 ## Install
 
-You need Node.js with `npx`, Git, access to this private GitHub repository, and an SSH key registered with your
-GitHub account for the commands below. Replace `OWNER` with the repository owner, then check access without
-installing anything. Use the same `skills_repository` variable for the installation commands in this shell:
+You need Node.js with `npx` and Git. Use the repository URL below to check access without installing anything.
+Use the same `skills_repository` variable for the installation commands in this shell:
 
 ```bash
-skills_repository='git@github.com:OWNER/skills.git'
+skills_repository='https://github.com/hosembafer/skills.git'
 git ls-remote "$skills_repository" HEAD
 ```
 
-It should print a commit hash and `HEAD`. `Permission denied (publickey)` means SSH authentication needs fixing;
-`Repository not found` can mean your GitHub account lacks access.
+It should print a commit hash and `HEAD`. If access fails while the repository is private, authenticate with a
+GitHub account that has access or use `git@github.com:hosembafer/skills.git` with a registered SSH key.
 
 All skills, for Claude Code and Codex:
 
