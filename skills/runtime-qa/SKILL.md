@@ -1,20 +1,24 @@
 ---
 name: runtime-qa
-description: Use when the user asks for runtime or manual QA of a change in the running app with Claude in Chrome or Codex's Chrome extension ("/runtime-qa", "run runtime QA", "QA this branch in Chrome", "verify it in the browser"), including when several QA sessions or worktrees run at the same time.
+description: Use when the user asks for runtime or manual QA of a change in the running app through Chrome DevTools MCP ("/runtime-qa", "run runtime QA", "QA this branch in Chrome", "verify it in the browser"), including when several QA sessions or worktrees run at the same time.
 argument-hint: "[what to test: a page, flow, ticket or behavior]"
-allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/port.sh *) Bash(bash ${CLAUDE_SKILL_DIR}/scripts/chrome.sh *)
+allowed-tools: Bash(bash ${CLAUDE_SKILL_DIR}/scripts/port.sh *)
 ---
 
 # Runtime QA
 
-Test the running app the way a manual QA engineer would, driving Chrome through your agent's browser extension: Claude
-in Chrome in Claude Code, the ChatGPT extension in Codex. Every session gets a **slot**: its own dev-server port and its
-own Chrome instance with a separate profile. Sessions in different checkouts or worktrees then run side by side without
-sharing a server, cookies, storage or sign-ins.
+Test the running app the way a manual QA engineer would, driving Chrome through **Chrome DevTools MCP** in Claude Code
+or Codex. Each session uses a dev-server **slot** and a dedicated MCP browser profile, so different checkouts or worktrees
+can run side by side without sharing a server, cookies, storage or sign-ins.
 
-Slot `n` is the `n`-th port of the dev server's port series and the Chrome profile `slot-n`. The scripts below pick
-and open both; run them exactly as written. `${CLAUDE_SKILL_DIR}` is the folder holding this file; in Codex, write that
-path out.
+Slot `n` is the `n`-th port of the dev server's port series. The MCP server owns and launches Chrome; its profile is
+configured separately from the app port. `${CLAUDE_SKILL_DIR}` is the folder holding this file; in Codex, resolve that
+folder from the loaded `SKILL.md` and use its quoted path.
+
+Discover the available Chrome DevTools MCP tools without opening the browser. Server prefixes vary by client and
+configuration; identify them by tools such as `list_pages`, `take_snapshot`, and `list_network_requests`. Read
+[references/chrome-devtools.md](references/chrome-devtools.md) when setup or session isolation needs attention. If the
+tools are unavailable, report the required setup instead of falling back to a browser extension.
 
 ## No fixes without approval
 
@@ -27,7 +31,7 @@ cases blocked and go on with the rest.
 Find the project's dev command and its default port (package scripts, the dev tool's config, the README). Then run:
 
 ```bash
-bash ${CLAUDE_SKILL_DIR}/scripts/port.sh <default port>
+bash "${CLAUDE_SKILL_DIR}/scripts/port.sh" <default port>
 ```
 
 It scans the series `<default port>`, `+100`, `+200`, … and prints a decision line plus a `taken` line for each port
@@ -43,74 +47,53 @@ that another checkout or program holds:
 Never stop or restart a server from a `taken` line. If the app pins its own origin in config (an auth redirect URL, an
 allowed-origins list), point it at the new port through the project's local, untracked settings before starting.
 
-Testing a deployed URL instead: skip this step and use the lowest slot that `chrome.sh --list` shows idle.
+Testing a deployed URL instead: skip this step; report the URL and MCP browser identity instead of a local port and slot.
 
 ## 2. Test plan
 
-Draft the plan as in `references/test-plan.md`: from the arguments if the user gave a scope, otherwise from the
-branch's changes. Show it and wait for the user's approval before any browser action.
+Draft the plan as in [references/test-plan.md](references/test-plan.md): from the arguments if the user gave a scope,
+otherwise from the branch's changes. Show it and get the user's approval before any browser action. An approval already
+given for the same plan still applies.
 
 ## 3. Browser
 
-1. Open the slot's Chrome on the app. In Codex, add `--agent codex` and run it outside the sandbox, which can't start
-   Chrome:
-
-   ```bash
-   bash ${CLAUDE_SKILL_DIR}/scripts/chrome.sh <slot> <app origin>
-   ```
-
-   The `id` line is the id your agent selects this Chrome by; browser names don't matter. `extension missing` means
-   this slot hasn't been used with your agent before: the script opened the extension's store page in the slot's
-   window. Ask the user to add the extension and sign in to it there, then read the slot's id from `chrome.sh --list`
-   (`claude=` or `codex=`).
-
-2. Connect this session to that Chrome and open a tab, as below for your agent.
-3. If the app asks for a sign-in, ask the user to sign in in that window. The profile keeps the session for later runs
-   of this slot.
-
-### Claude Code
-
-1. Load the `claude-in-chrome` skill, then every browser tool you will need in one ToolSearch call, including
-   `list_connected_browsers`, `select_browser` and `switch_browser`.
-2. Call `list_connected_browsers`. If the slot's id is listed and already `inUse`, go on. If it is listed but not in
-   use, ask with AskUserQuestion which browser to use: the slot's id first, labeled with its name and `slot <n>`, and
-   marked Recommended. Call `select_browser` with the answer.
-3. If the id is `none` or not listed, call `switch_browser`. The prompt appears in every Chrome that has the extension,
-   so tell the user to click Connect only in the slot's window.
-4. Call `tabs_context_mcp` with `createIfEmpty: true`. Use the empty tab it creates, or `tabs_create_mcp` when the group
-   already has tabs.
-5. Call `read_console_messages` and `read_network_requests` once on that tab. They only record from their first call,
-   so they must run before the page loads. Then navigate to the app origin.
-
-### Codex
-
-1. Set up the browser runtime the way the Chrome plugin's `control-chrome` skill describes, up to
-   `const agent = await setupBrowserRuntime()`.
-2. Bind the slot's Chrome by its id. `agent.browsers.get("chrome")` can bind a different Chrome, so call
-   `agent.browsers.list()` instead, take the `extension` browser whose `metadata.extensionInstanceId` equals the
-   slot's id, and bind it with `agent.browsers.get(<that browser's id>)`. Read its whole `documentation()` before using
-   it.
-3. If no browser has that id, ask the user to check that the ChatGPT extension is signed in in the slot's window, then
-   list again. If it is still missing, follow the plugin's `chrome-troubleshooting` documentation.
-4. Name the session, open a new tab, start the network and console capture its documentation describes, then navigate
-   to the app origin. Codex asks the user before its first visit to a site, so tell the user to allow the app's origin.
-   A non-interactive run such as `codex exec` can't ask, and the visit is denied.
+1. Use one MCP server namespace and its dedicated profile for this run. Confirm isolation from its launch config:
+   `--isolated` gives each server process a temporary profile; `--userDataDir` gives it an explicitly assigned persistent
+   profile. Neither a different namespace nor a new tab alone proves isolation. Do not attach to the user's personal
+   Chrome or a browser used by another QA session.
+2. Read [references/browser-gotchas.md](references/browser-gotchas.md), then call `list_pages` on that server. Create a
+   fresh `about:blank` page with `new_page`, record its page ID and the server namespace, and keep all browser calls on
+   that pair. Pass `pageId` when the installed tools expose it; otherwise use `select_page` before operating on the page.
+3. Navigate that page to the app with `navigate_page`. The MCP attaches before navigation and collects network and
+   console events; use `list_network_requests` and `list_console_messages` to inspect the initial load.
+4. If the app asks for a sign-in, use the project's approved QA login recipe or ask the user to sign in in this window.
+   Verify an existing session's identity through the app's account UI before reusing it. Persistent profiles retain
+   sign-ins; temporary profiles do not retain them after the browser closes.
+5. Take a snapshot, wait for the expected app content, then execute the approved plan. If browser setup, login or the
+   environment blocks a case, report the blocker and continue with unaffected cases.
 
 ## 4. Run the plan
 
-Go flow by flow. Check every case's checkpoint as described in `references/test-plan.md`. In Claude Code, read
-`references/browser-gotchas.md` before your first `javascript_tool` call and whenever a click, read or measurement
-behaves oddly. In Codex, the browser's `documentation()` covers the same ground.
+Go flow by flow. Check every case's checkpoint as described in `references/test-plan.md`. Use snapshot element UIDs for
+interactions, `evaluate_script` for read-only DOM or state probes, and MCP's request and console detail tools for evidence.
+Follow the installed tool schemas; parameter names and page routing can differ between versions.
 
 After each flow, post the scoreboard, the findings and the off-plan observations.
 
 ## 5. Fix and re-test
 
 For each failure, propose a fix with its root cause and the files it touches, and wait. After an approved fix, wait for
-the rebuild, reload the page, re-run the affected cases and post the updated scoreboard. Repeat until every case passes
-or the user stops.
+the rebuild, reload the same page with `navigate_page` (`type: "reload"`; use `ignoreCache: true` for stale chunks),
+re-run the affected cases and post the updated scoreboard. Repeat until every case passes or the user stops.
 
 ## Reply
 
-Leave the dev server and the slot's Chrome running. End with the final scoreboard, the findings, the off-plan
-observations, the port and slot, and the server log path if this session started the server.
+Leave the dev server and MCP browser available for follow-up work; the client may close Chrome when its MCP server
+stops. End with the final scoreboard, findings, off-plan observations, app URL, local port and slot when applicable,
+MCP server namespace and page ID, and the server log path if this session started the server.
+
+## Verifying changes to this skill
+
+Use [references/regression-plan.md](references/regression-plan.md) for the reusable public-site regression plan covering
+two isolated browser contexts, network and console evidence, local-storage separation, cleanup and independent
+navigation. This is a maintenance check for the skill; ordinary app QA uses the user's own scope.

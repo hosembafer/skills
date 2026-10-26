@@ -19,6 +19,8 @@ Git tags. Changes below remain unreleased until committed, validated, and tagged
 
 ### Changed
 
+- `runtime-qa` uses Chrome DevTools MCP in Claude Code and Codex, with MCP-managed browser profiles, request and console
+  evidence, and setup instructions for isolated or persistent sessions. The extension launcher has been removed.
 - Contributor validation uses Go and a single YAML library. ShellCheck is installed directly, with a pinned version
   and verified download checksums in CI.
 - The local `whoami` account helper uses the Go standard library and runs from an installed skill bundle. Tests cover

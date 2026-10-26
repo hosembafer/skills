@@ -110,11 +110,14 @@ Codex:
 $runtime-qa verify the checkout form's empty-field error and successful submission
 ```
 
-The agent chooses or reuses a dev-server port and drafts a test plan for your approval. Once approved, it opens the
-slot's isolated Chrome profile and runs the plan using its browser extension. The first use of a slot may require
-installing the extension and signing in. The final reply includes case statuses, findings and evidence, the port and
-slot, and the server log path when the agent started the server. Fixes need separate approval. The server and Chrome
-stay running for follow-up work.
+Configure [Chrome DevTools MCP](../skills/runtime-qa/references/chrome-devtools.md) in your agent first. The agent chooses
+or reuses a dev-server port and drafts a test plan for your approval. Once approved, MCP launches a dedicated Chrome
+profile and the agent runs the plan there. Sign in to the app if needed; a persistent profile can keep that sign-in
+for later runs. Each concurrent run needs its own MCP browser profile as well as its app port.
+
+The final reply includes case statuses, findings and evidence, the app URL, local port and slot when applicable, MCP
+server namespace and page ID, and the server log path when the agent started the server. Fixes need separate approval.
+The server and browser remain available for follow-up work while the MCP connection stays open.
 
 ## Foundation
 
