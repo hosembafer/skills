@@ -1,0 +1,4 @@
+interface:
+  display_name: "Foundation"
+  short_description: "Pin a feature's non-negotiable decisions in one short file"
+  default_prompt: "Use $foundation before planning this feature."

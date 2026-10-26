@@ -116,6 +116,29 @@ installing the extension and signing in. The final reply includes case statuses,
 slot, and the server log path when the agent started the server. Fixes need separate approval. The server and Chrome
 stay running for follow-up work.
 
+## Foundation
+
+You are about to plan a feature whose data sources, access checks, or naming must not drift, and no
+`docs/foundations/<feature>.foundation.md` exists yet.
+
+Claude Code:
+
+```text
+/foundation order-totals
+```
+
+Codex:
+
+```text
+$foundation order-totals
+```
+
+The agent reads the ticket, spec, design, and code, then asks you one question at a time, vocabulary first, and writes
+only the lines you confirm, each with what it rules out and why. Missing contracts become `BLOCKED` with an owner and
+undecided questions become `Open` with an owner. You set `Status: established` when the file is yours. From then on,
+any agent working in that feature reads the file first, stops on `BLOCKED` surfaces, asks the named owner for `Open`
+ones, and proposes replacement text in chat instead of editing the file.
+
 ## Who am I
 
 Claude Code:

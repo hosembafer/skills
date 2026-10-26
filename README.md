@@ -11,6 +11,7 @@ A collection of agent skills for Claude Code and Codex, using the [Agent Skills]
 | [commit-subject](skills/commit-subject/SKILL.md) | Writes a one-line commit subject for the current changes in the repo's style and copies it to the clipboard. | Agent or user |
 | [smart-copy](skills/smart-copy/SKILL.md) | Copies what you'll paste next (a continue prompt, a drafted message, a command) to the clipboard, verbatim. | Agent or user |
 | [runtime-qa](skills/runtime-qa/SKILL.md) | Runs manual QA in Chrome through the agent's browser extension, each session on its own port and profile. | Agent or user |
+| [foundation](skills/foundation/SKILL.md) | Pins one feature's non-negotiable decisions (vocabulary, sources, access, rules, open questions) in a short human-owned file that agents obey and never edit. | Agent or user |
 | [whoami](skills/whoami/SKILL.md) | Reports which agent CLI is running the session and which account is logged into it. | Agent or user |
 
 In Claude Code, invoke a skill with `/skill-name`. In Codex, mention `$skill-name` in your prompt or select it through
@@ -32,6 +33,7 @@ conflict, so the integration branch tests each branch as it will ship.
 | `commit-subject` | Yes | Yes | macOS | Git and `pbcopy`. |
 | `smart-copy` | Yes | Yes | macOS | `pbcopy`, `pbpaste`, and Perl. |
 | `runtime-qa` | Yes, with Claude in Chrome | Yes, with the Chrome plugin | macOS | Bash, Git, `lsof`, Google Chrome, and the agent's installed, signed-in browser extension. |
+| `foundation` | Yes | Yes | Any OS | None beyond file access to the repository. Reading tickets, specs, or designs uses whatever connectors the session has. |
 | `whoami` | Agent identity; account from context | Agent identity; account lookup when available | Any OS for context or connected account lookup; macOS or Linux for the local helper | Local Codex account lookup needs Go and `codex` on `PATH`. The helper uses only the standard library and runs from an installed bundle. Other agents use explicit session context and may report `unknown`. |
 
 The table describes each workflow's requirements. CI validates structure and syntax on macOS and Linux; it does not
