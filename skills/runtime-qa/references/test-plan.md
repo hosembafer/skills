@@ -30,12 +30,19 @@ it and what would unblock it.
 
 Every TC has one. Network and console are the default pair.
 
-- **Network:** the page's requests (`read_network_requests` in Claude in Chrome). A 4xx or 5xx the TC did not expect
-  fails it. Record it as `METHOD /path → status`.
-- **Console:** the page's console, filtered to what matters (`read_console_messages` with a `pattern`). Page errors fail
-  the TC. Third-party noise (analytics, chat widgets) is reported once per session and fails nothing.
-- **Visual:** a screenshot for any layout or visual defect, described in plain words.
-- **State:** script reads of the DOM or app state (`javascript_tool`; see `browser-gotchas.md` before writing one).
+- **Network:** `list_network_requests` on this session's page; `get_network_request` with its `reqid` when request or
+  response details matter. A 4xx or 5xx the TC did not expect, or a failed transport request, fails it. Record it as
+  `METHOD /path → status` (or the transport error).
+- **Console:** `list_console_messages`, filtered with `types` when useful, then `get_console_message` with its `msgid`
+  for details. Page errors fail the TC. Third-party noise (analytics, chat widgets) is reported once per session and
+  fails nothing.
+- **Visual:** `take_screenshot` for any layout or visual defect, described in plain words. Save evidence under the OS
+  temp directory or session scratchpad, outside the repository.
+- **State:** read-only DOM or app-state probes with `evaluate_script`; see `browser-gotchas.md` before writing one.
+
+Check evidence after each case and before navigating away. Use the preserved-request/message options for redirects
+when the installed tools support them. Correlate new request and message IDs with the action being tested rather than
+attributing earlier failures to a later case. Keep credentials, tokens and cookies out of reports and saved evidence.
 
 ## Scoreboard
 

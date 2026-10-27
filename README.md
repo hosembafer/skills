@@ -10,7 +10,8 @@ A collection of agent skills for Claude Code and Codex, using the [Agent Skills]
 | [merge-to](skills/merge-to/SKILL.md) | Pushes the branch, merges it into a shared integration branch such as `staging`, and pushes the merge. | Explicit invocation only |
 | [commit-subject](skills/commit-subject/SKILL.md) | Writes a one-line commit subject for the current changes in the repo's style and copies it to the clipboard. | Agent or user |
 | [smart-copy](skills/smart-copy/SKILL.md) | Copies what you'll paste next (a continue prompt, a drafted message, a command) to the clipboard, verbatim. | Agent or user |
-| [runtime-qa](skills/runtime-qa/SKILL.md) | Runs manual QA in Chrome through the agent's browser extension, each session on its own port and profile. | Agent or user |
+| [runtime-qa](skills/runtime-qa/SKILL.md) | Runs manual QA through Chrome DevTools MCP, each session on its own dev-server port and browser profile. | Agent or user |
+| [foundation](skills/foundation/SKILL.md) | Pins one feature's non-negotiable decisions (vocabulary, sources, access, rules, open questions) in a short human-owned file that agents obey and never edit. | Agent or user |
 | [whoami](skills/whoami/SKILL.md) | Reports which agent CLI is running the session and which account is logged into it. | Agent or user |
 
 In Claude Code, invoke a skill with `/skill-name`. In Codex, mention `$skill-name` in your prompt or select it through
@@ -31,7 +32,8 @@ conflict, so the integration branch tests each branch as it will ship.
 | `merge-to` | Yes | Yes | macOS or Linux | Bash, Git with worktree support, an `origin` remote, and push access to both branches. |
 | `commit-subject` | Yes | Yes | macOS | Git and `pbcopy`. |
 | `smart-copy` | Yes | Yes | macOS | `pbcopy`, `pbpaste`, and Perl. |
-| `runtime-qa` | Yes, with Claude in Chrome | Yes, with the Chrome plugin | macOS | Bash, Git, `lsof`, Google Chrome, and the agent's installed, signed-in browser extension. |
+| `runtime-qa` | Yes, with Chrome DevTools MCP | Yes, with Chrome DevTools MCP | macOS or Linux | Bash, Git, `lsof`, Google Chrome, Node.js LTS with npm/npx, and a configured Chrome DevTools MCP server. |
+| `foundation` | Yes | Yes | Any OS | None beyond file access to the repository. Reading tickets, specs, or designs uses whatever connectors the session has. |
 | `whoami` | Agent identity; account from context | Agent identity; account lookup when available | Any OS for context or connected account lookup; macOS or Linux for the local helper | Local Codex account lookup needs Go and `codex` on `PATH`. The helper uses only the standard library and runs from an installed bundle. Other agents use explicit session context and may report `unknown`. |
 
 The table describes each workflow's requirements. CI validates structure and syntax on macOS and Linux; it does not
@@ -41,10 +43,10 @@ use these instructions, but their invocation policies and tool integrations have
 Script paths come from the loaded skill's directory. Claude Code exposes `${CLAUDE_SKILL_DIR}`; in Codex, the agent
 resolves that directory from the loaded `SKILL.md` path and passes arguments from your prompt explicitly.
 
-`runtime-qa` needs Google Chrome on macOS, and Claude Code with Claude in Chrome or Codex with its Chrome plugin. Each
-QA slot is a separate Chrome instance with its own profile under `~/.runtime-qa/chrome`. The first run of a slot with
-an agent asks you to add that agent's extension in the slot's window and sign in; later runs reuse the profile, its
-extensions and its sign-ins.
+`runtime-qa` uses Chrome DevTools MCP in either agent. MCP launches Chrome with a dedicated profile; no browser
+extension is required. Use `--isolated` for a temporary profile per server process, or a distinct `--userDataDir` for
+each concurrent run when sign-ins should persist. The app port and browser profile are assigned separately. See
+[MCP setup and isolation](skills/runtime-qa/references/chrome-devtools.md) before the first run.
 
 ## Install
 
@@ -139,8 +141,7 @@ skills/
   runtime-qa/
     SKILL.md
     scripts/port.sh      # picks the dev-server port for the checkout
-    scripts/chrome.sh    # opens the slot's isolated Chrome profile
-    references/          # test plan format, Claude in Chrome gotchas
+    references/          # test plan format, Chrome DevTools MCP setup and gotchas
     agents/openai.yaml
   whoami/
     SKILL.md

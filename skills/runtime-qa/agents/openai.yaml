@@ -1,4 +1,4 @@
 interface:
   display_name: "Runtime QA"
-  short_description: "Test app flows in an isolated Chrome session"
+  short_description: "Test app flows with Chrome DevTools MCP"
   default_prompt: "Use $runtime-qa to verify the changes on this branch in Chrome."

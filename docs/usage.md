@@ -110,11 +110,37 @@ Codex:
 $runtime-qa verify the checkout form's empty-field error and successful submission
 ```
 
-The agent chooses or reuses a dev-server port and drafts a test plan for your approval. Once approved, it opens the
-slot's isolated Chrome profile and runs the plan using its browser extension. The first use of a slot may require
-installing the extension and signing in. The final reply includes case statuses, findings and evidence, the port and
-slot, and the server log path when the agent started the server. Fixes need separate approval. The server and Chrome
-stay running for follow-up work.
+Configure [Chrome DevTools MCP](../skills/runtime-qa/references/chrome-devtools.md) in your agent first. The agent chooses
+or reuses a dev-server port and drafts a test plan for your approval. Once approved, MCP launches a dedicated Chrome
+profile and the agent runs the plan there. Sign in to the app if needed; a persistent profile can keep that sign-in
+for later runs. Each concurrent run needs its own MCP browser profile as well as its app port.
+
+The final reply includes case statuses, findings and evidence, the app URL, local port and slot when applicable, MCP
+server namespace and page ID, and the server log path when the agent started the server. Fixes need separate approval.
+The server and browser remain available for follow-up work while the MCP connection stays open.
+
+## Foundation
+
+You are about to plan a feature whose data sources, access checks, or naming must not drift, and no
+`docs/foundations/<feature>.foundation.md` exists yet.
+
+Claude Code:
+
+```text
+/foundation order-totals
+```
+
+Codex:
+
+```text
+$foundation order-totals
+```
+
+The agent reads the ticket, spec, design, and code, then asks you one question at a time, vocabulary first, and writes
+only the lines you confirm, each with what it rules out and why. Missing contracts become `BLOCKED` with an owner and
+undecided questions become `Open` with an owner. You set `Status: established` when the file is yours. From then on,
+any agent working in that feature reads the file first, stops on `BLOCKED` surfaces, asks the named owner for `Open`
+ones, and proposes replacement text in chat instead of editing the file.
 
 ## Who am I
 
