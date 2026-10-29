@@ -28,14 +28,22 @@ cases blocked and go on with the rest.
 
 ## 1. Dev server
 
-Find the project's dev command and its default port (package scripts, the dev tool's config, the README). Then run:
+Find the project's dev command and its default port (package scripts, the dev tool's config, the README). Then look
+for the project's own rules on which port each checkout or worktree serves on: its agent instructions (`AGENTS.md`,
+`CLAUDE.md`), its README, and any script those point to. When the project has them, they decide:
+
+- A script that picks the port: run it as documented and follow its decision instead of `port.sh`.
+- A port range: scan it with `port.sh <first port> 1 <number of ports>`.
+- A command that serves on a given port: use it whenever you start the server.
+
+Only when the project has no such rules, scan this skill's default series:
 
 ```bash
 bash "${CLAUDE_SKILL_DIR}/scripts/port.sh" <default port>
 ```
 
-It scans the series `<default port>`, `+100`, `+200`, … and prints a decision line plus a `taken` line for each port
-that another checkout or program holds:
+It scans `<default port>`, `+100`, `+200`, … (or the range you passed) and prints a decision line plus a `taken` line
+for each port that another checkout or program holds:
 
 - `reuse <port> slot <n>`: a server from this checkout already runs there. Use it as it is; don't restart it.
 - `start <port> slot <n>`: run the dev command with its port option set to `<port>`, as
