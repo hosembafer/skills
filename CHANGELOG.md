@@ -19,6 +19,8 @@ Git tags. Changes below remain unreleased until committed, validated, and tagged
 
 ### Changed
 
+- `commit-subject` gives the reason it both prints and copies the subject, and `foundation` says how its evidence
+  recon reaches the human (only through questions) instead of telling the agent to work silently.
 - `runtime-qa` follows the project's own dev-server port rules (a port-picking script, a port range or a serve-on-port
   command named in its agent instructions or README) and falls back to its `+100` port series only when there are none.
 - `runtime-qa` uses Chrome DevTools MCP in Claude Code and Codex, with MCP-managed browser profiles, request and console

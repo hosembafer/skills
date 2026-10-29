@@ -28,7 +28,7 @@ Before planning or changing code in a feature, glob `**/*.foundation.md` and mat
 
 The human drives. **REQUIRED:** read `references/authoring.md` before your first question. The shape is `references/template.md`; a finished one is `references/example.foundation.md`.
 
-- Recon the evidence first, silently: ticket, spec, design, the code folder, the generated client, the policies.
+- Recon the evidence first: ticket, spec, design, the code folder, the generated client, the policies. It reaches the human only through your questions, not as a report of what you read.
 - Vocabulary comes first, because every later line uses it.
 - One question per message. A line enters only after the human confirms it, in their words.
 - A closed line names what it rules out and why. A missing contract becomes `BLOCKED` with an owner. An undecided question becomes `Open` with an owner.

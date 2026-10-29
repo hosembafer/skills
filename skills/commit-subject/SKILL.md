@@ -24,4 +24,4 @@ Analyze the current git changes and generate a concise commit subject that follo
    - Description: imperative mood, max 50-72 chars
    - If the user passed extra arguments (e.g. `use chore`, `feat(monitoring)`, ticket id), treat them as a constraint or hint and apply them to the generated subject
 7. Copy the generated subject to the macOS clipboard by piping it through `pbcopy`. Run: `printf '%s' '<subject>' | pbcopy` (escape any single quote in the subject as `'\''`).
-8. Output the single line commit subject as plain text so the user can see it. No backticks, no prefix like "Based on the analysis:", no surrounding commentary — just the subject on its own line. The subject MUST be both printed AND copied to the clipboard.
+8. Output the single line commit subject as plain text so the user can see it. No backticks, no prefix like "Based on the analysis:", no surrounding commentary — just the subject on its own line. Print the subject and copy it; both are required, since the user reads the printed line and the wrapper reads the clipboard.
